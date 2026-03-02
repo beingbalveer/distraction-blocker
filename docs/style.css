@@ -77,6 +77,8 @@ nav {
 
 .nav-links .btn-primary {
     margin-left: 2rem;
+    /* make sure primary buttons in nav have white text despite nav-links rule */
+    color: #fff;
 }
 
 /* Buttons */
