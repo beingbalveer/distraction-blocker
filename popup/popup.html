@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Distraction Blocker</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <div class="popup-header">
+      <div class="header-title">
+        <span class="header-icon">🛡️</span>
+        <h1>Distraction Blocker</h1>
+      </div>
+      <div class="site-badge" id="site-badge">
+        <span class="site-dot"></span>
+        <span id="site-name">Detecting…</span>
+      </div>
+    </div>
+
+    <!-- Toggles Container -->
+    <div class="toggles-container" id="toggles-container">
+      <!-- Toggles are dynamically generated -->
+    </div>
+
+    <!-- Unsupported Site Message -->
+    <div class="unsupported-message" id="unsupported-message" style="display: none;">
+      <span class="unsupported-icon">🚫</span>
+      <p>This site is not supported yet.</p>
+      <span class="unsupported-hint">Supported: Reddit, YouTube, Instagram, Facebook</span>
+    </div>
+
+    <!-- Footer -->
+    <div class="popup-footer" id="popup-footer">
+      <button class="btn btn-hide-all" id="btn-hide-all">Hide All</button>
+      <button class="btn btn-show-all" id="btn-show-all">Show All</button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+/*
+ * Reddit baseline styles — Distraction Blocker
+ *
+ * No sections are hidden by default.
+ * All hiding is controlled dynamically via the popup toggles
+ * and applied by the content script through JS.
+ */
+
+/* Expand main content to full width when sidebars get hidden via JS */
+.db-expanded .main-container {
+    grid-template-columns: minmax(0, 1fr) !important;
+}
+
+.db-expanded .subgrid-container {
+    max-width: 100% !important;
+    width: 100% !important;
+}
