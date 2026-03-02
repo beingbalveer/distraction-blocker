@@ -140,33 +140,7 @@ Each site's `content.js` handles the specific element selection and hiding. You 
 
 ---
 
-## 🛠️ Development
 
-### Project Structure Details
-
-**Extension Type**: Manifest V3 (Chrome Extension API)  
-**Languages**: HTML, CSS, JavaScript  
-**No Dependencies**: Fully vanilla implementation with zero external dependencies
-
-### Local Testing
-
-1. Load the extension in developer mode (see Installation → Method 2)
-2. Visit one of the supported platforms
-3. Open extension popup and toggle options
-4. Reload the page to see changes take effect
-5. Check browser console for any errors: `F12` → Console tab
-
-### Making Changes
-
-For **popup UI changes**:
-- Edit `popup/popup.html` or `popup/popup.css`
-- Reload the extension: `chrome://extensions/` → Click reload icon
-
-For **site-specific hiding logic**:
-- Edit `sites/{platform}/content.js` or `sites/{platform}/styles.css`
-- Reload affected pages to test
-
----
 
 ## 📖 Usage Tips
 
