@@ -1,7 +1,7 @@
 // Simple scroll animation for feature cards
 document.addEventListener('DOMContentLoaded', () => {
-    const cards = document.querySelectorAll('.feature-card');
-    
+    const cards = document.querySelectorAll('.feature-card, .step-content, .platform-card');
+
     const observerOptions = {
         threshold: 0.1
     };
@@ -28,8 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const targetId = this.getAttribute('href');
             if (targetId === '#') return;
-            
-            document.querySelector(targetId).scrollIntoView({
+
+            const target = document.querySelector(targetId);
+            if (!target) return;
+
+            target.scrollIntoView({
                 behavior: 'smooth'
             });
         });
