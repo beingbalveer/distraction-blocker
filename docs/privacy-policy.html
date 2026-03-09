@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | Distraction Blocker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@700&display=swap"
+        rel="stylesheet">
+    <style>
+        .legal-page {
+            padding: 10rem 0 6rem;
+            min-height: 90vh;
+        }
+
+        .legal-page h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .legal-page .last-updated {
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+            margin-bottom: 3rem;
+        }
+
+        .legal-content {
+            max-width: 800px;
+        }
+
+        .legal-content h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            color: var(--accent);
+            margin: 2.5rem 0 1rem;
+        }
+
+        .legal-content p,
+        .legal-content li {
+            color: var(--secondary-text);
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        .legal-content ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .legal-content a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .legal-content a:hover {
+            text-decoration: underline;
+        }
+
+        .highlight-box {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-left: 3px solid var(--accent);
+            border-radius: 8px;
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+        }
+
+        .highlight-box p {
+            margin-bottom: 0;
+            color: var(--text);
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="container nav-content">
+            <a href="index.html" class="logo" style="text-decoration:none;">Distraction<span>Blocker</span></a>
+            <div class="nav-links">
+                <a href="index.html#features">Features</a>
+                <a href="index.html#how-it-works">How it Works</a>
+                <a href="#" class="btn-primary">Download Extension</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="legal-page">
+        <div class="container">
+            <div class="legal-content">
+                <h1>Privacy <span class="gradient-text">Policy</span></h1>
+                <p class="last-updated">Last updated: March 9, 2026</p>
+
+                <div class="highlight-box">
+                    <p><strong>TL;DR:</strong> Distraction Blocker does not collect, transmit, or share any personal
+                        data. All your preferences are stored locally on your device using Chrome's built-in sync
+                        storage. We have no servers, no analytics, and no tracking of any kind.</p>
+                </div>
+
+                <h2>1. Introduction</h2>
+                <p>Distraction Blocker ("we", "our", or "the extension") is a Chrome browser extension that helps you
+                    hide distracting elements on social media and content platforms. This Privacy Policy explains how we
+                    handle information when you use the extension.</p>
+                <p>We are committed to protecting your privacy. Our extension is designed from the ground up to operate
+                    entirely on your device, with zero data leaving your browser.</p>
+
+                <h2>2. Data We Collect</h2>
+                <p><strong>We collect no personal data.</strong> The extension does not collect, store on external
+                    servers, or transmit any of the following:</p>
+                <ul>
+                    <li>Personal identifiers (name, email address, IP address)</li>
+                    <li>Browsing history or web activity logs</li>
+                    <li>Website content you view</li>
+                    <li>Cookies or tracking data</li>
+                    <li>Usage analytics or telemetry</li>
+                    <li>Device information</li>
+                </ul>
+
+                <h2>3. Data Stored Locally</h2>
+                <p>The only data the extension stores are your toggle preferences (e.g., "hide YouTube sidebar: on").
+                    These preferences are saved using <strong>Chrome's built-in
+                        <code style="color: var(--accent);">chrome.storage.sync</code> API</strong>, which:</p>
+                <ul>
+                    <li>Stores data locally on your device</li>
+                    <li>Optionally syncs across your signed-in Chrome browsers via Google's infrastructure</li>
+                    <li>Is entirely managed by Chrome and Google — we have no access to it</li>
+                    <li>Contains only simple key-value pairs like <code
+                            style="color: var(--accent);">{ "hideYoutubeSidebar": true }</code></li>
+                </ul>
+                <p>This data never leaves the Chrome/Google ecosystem and is never sent to any servers we operate.</p>
+
+                <h2>4. Permissions We Request</h2>
+                <p>The extension requests the following Chrome permissions, and only these:</p>
+                <ul>
+                    <li><strong>storage</strong> — To save and retrieve your element-hiding preferences locally.</li>
+                    <li><strong>activeTab</strong> — To detect which website you are currently viewing, so the popup
+                        can display the relevant options for that site. The URL is read in-memory only and is never
+                        stored or transmitted.</li>
+                </ul>
+                <p>We request the minimum permissions necessary. We do not request access to all tabs, browsing
+                    history, or any other sensitive data.</p>
+
+                <h2>5. Third-Party Services</h2>
+                <p>The extension itself communicates with no third-party servers. However, two external services are
+                    used by this website (not the extension):</p>
+                <ul>
+                    <li><strong>GitHub Pages</strong> — This website is hosted on GitHub Pages. GitHub may collect
+                        standard web server logs. See <a
+                            href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement"
+                            target="_blank" rel="noopener">GitHub's Privacy Statement</a>.</li>
+                    <li><strong>Google Fonts</strong> — This website loads fonts from Google Fonts. See <a
+                            href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy
+                            Policy</a>.</li>
+                </ul>
+
+                <h2>6. Chrome Web Store Limited Use Compliance</h2>
+                <p>Distraction Blocker complies with the <a
+                        href="https://developer.chrome.com/docs/webstore/program-policies/limited-use/" target="_blank"
+                        rel="noopener">Chrome Web Store Limited Use Policy</a>. Specifically:</p>
+                <ul>
+                    <li>We do not use any user data for advertising purposes.</li>
+                    <li>We do not transfer or sell user data to third parties.</li>
+                    <li>We do not use user data to determine creditworthiness or for lending.</li>
+                    <li>Data use is strictly limited to providing and improving the extension's core features as
+                        described to users.</li>
+                </ul>
+
+                <h2>7. Children's Privacy</h2>
+                <p>Distraction Blocker does not knowingly collect any personal information from children under the age
+                    of 13 (or the applicable age of digital consent in your jurisdiction). Because we collect no
+                    personal data from anyone, there is no additional risk to minors.</p>
+
+                <h2>8. Changes to This Policy</h2>
+                <p>If we make material changes to this Privacy Policy, we will update the "Last updated" date at the
+                    top of this page. Continued use of the extension after changes constitutes acceptance of the
+                    updated policy. We encourage you to review this policy periodically.</p>
+
+                <h2>9. Contact</h2>
+                <p>If you have questions or concerns about this Privacy Policy, please open an issue on our <a
+                        href="https://github.com" target="_blank" rel="noopener">GitHub repository</a>.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="logo">Distraction<span>Blocker</span></div>
+                <p>&copy; 2026 Distraction Blocker. Built for focus.</p>
+                <div class="social-links">
+                    <a href="privacy-policy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Use</a>
+                    <a href="#">GitHub</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
