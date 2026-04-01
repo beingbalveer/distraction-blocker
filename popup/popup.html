@@ -38,6 +38,25 @@
       <button class="btn btn-show-all" id="btn-show-all">Show All</button>
     </div>
 
+    <!-- Profiles Section (always visible) -->
+    <div class="profiles-section">
+      <div class="profiles-title">
+        <span>🔖</span>
+        <span>Profiles</span>
+      </div>
+      <div class="profiles-load-row">
+        <select id="profiles-select">
+          <option value="">— no saved profiles —</option>
+        </select>
+        <button class="btn-icon" id="btn-profile-load" title="Load profile">▶</button>
+        <button class="btn-icon btn-icon-danger" id="btn-profile-delete" title="Delete profile">✕</button>
+      </div>
+      <div class="profiles-save-row">
+        <input type="text" id="profile-name-input" placeholder="Profile name…" maxlength="40">
+        <button class="btn-icon btn-icon-accent" id="btn-profile-save" title="Save current settings as profile">Save</button>
+      </div>
+    </div>
+
     <!-- Schedule Section (always visible) -->
     <div class="schedule-section">
       <div class="schedule-header">

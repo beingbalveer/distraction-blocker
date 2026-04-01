@@ -76,13 +76,16 @@ const SITE_DEFAULTS = {
   facebook: { header: false, leftSidebar: false, rightSidebar: false, stories: false, reels: false }
 };
 
+const ALL_SITES = Object.keys(SITE_DEFAULTS);
+
 let currentSite = null;
 let currentPrefs = {};
 let currentSchedule = { ...SCHEDULE_DEFAULTS };
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Load schedule first (independent of tab detection)
+  // Load schedule and profiles (independent of tab detection)
   initSchedule();
+  initProfiles();
 
   // Detect current tab
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -282,4 +285,100 @@ function isScheduleActiveLocal(schedule) {
 
 function saveSchedule() {
   chrome.storage.sync.set({ schedule: currentSchedule });
+}
+
+// ── Profiles ─────────────────────────────────────────────────────────────────
+
+function initProfiles() {
+  chrome.storage.sync.get('profiles', (result) => {
+    renderProfilesUI(result.profiles || {});
+  });
+
+  document.getElementById('btn-profile-save').addEventListener('click', saveProfile);
+  document.getElementById('btn-profile-load').addEventListener('click', loadProfile);
+  document.getElementById('btn-profile-delete').addEventListener('click', deleteProfile);
+}
+
+function renderProfilesUI(profiles) {
+  const select = document.getElementById('profiles-select');
+  const current = select.value;
+  select.innerHTML = '';
+
+  const names = Object.keys(profiles);
+  if (names.length === 0) {
+    const opt = document.createElement('option');
+    opt.value = '';
+    opt.textContent = '— no saved profiles —';
+    select.appendChild(opt);
+  } else {
+    names.forEach((name) => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      select.appendChild(opt);
+    });
+    // Restore selection if it still exists
+    if (current && profiles[current]) select.value = current;
+  }
+}
+
+function saveProfile() {
+  const name = document.getElementById('profile-name-input').value.trim();
+  if (!name) return;
+
+  // Read all site prefs from storage, then save the snapshot as a profile
+  const keys = ALL_SITES.map((s) => `prefs_${s}`);
+  chrome.storage.sync.get(['profiles', ...keys], (result) => {
+    const profiles = result.profiles || {};
+    const snapshot = {};
+    ALL_SITES.forEach((site) => {
+      const defaults = SITE_DEFAULTS[site] || {};
+      const saved = result[`prefs_${site}`] || {};
+      snapshot[site] = { ...defaults, ...saved };
+    });
+    profiles[name] = snapshot;
+    chrome.storage.sync.set({ profiles }, () => {
+      document.getElementById('profile-name-input').value = '';
+      renderProfilesUI(profiles);
+      document.getElementById('profiles-select').value = name;
+    });
+  });
+}
+
+function loadProfile() {
+  const name = document.getElementById('profiles-select').value;
+  if (!name) return;
+
+  chrome.storage.sync.get('profiles', (result) => {
+    const profiles = result.profiles || {};
+    const profile = profiles[name];
+    if (!profile) return;
+
+    // Write each site's prefs from the profile into storage
+    const updates = {};
+    ALL_SITES.forEach((site) => {
+      if (profile[site]) updates[`prefs_${site}`] = profile[site];
+    });
+
+    chrome.storage.sync.set(updates, () => {
+      // If we're on a supported site, refresh the toggles immediately
+      if (currentSite && profile[currentSite]) {
+        currentPrefs = { ...SITE_DEFAULTS[currentSite], ...profile[currentSite] };
+        renderToggles();
+      }
+    });
+  });
+}
+
+function deleteProfile() {
+  const name = document.getElementById('profiles-select').value;
+  if (!name) return;
+
+  chrome.storage.sync.get('profiles', (result) => {
+    const profiles = result.profiles || {};
+    delete profiles[name];
+    chrome.storage.sync.set({ profiles }, () => {
+      renderProfilesUI(profiles);
+    });
+  });
 }
