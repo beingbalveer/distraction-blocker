@@ -1,4 +1,33 @@
 /*
  * Facebook baseline styles — Distraction Blocker
- * TODO: Add baseline hide rules for Facebook UI elements.
+ *
+ * No sections are hidden by default.
+ * All hiding is controlled dynamically via the popup toggles
+ * and applied by the content script through JS.
  */
+
+/* Remove top offset reserved for navbar when header is hidden */
+div[role="banner"][style*="none"] ~ div {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* Collapse left rail width when hidden — prevents empty white column */
+[data-pagelet="LeftRail"][style*="none"] {
+    width: 0 !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+}
+
+/* Collapse right rail when hidden */
+[data-pagelet="RightRail"][style*="none"] {
+    width: 0 !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+}
+
+/* Prevent gap when stories row is hidden */
+[data-pagelet="Stories"][style*="none"] {
+    margin: 0 !important;
+    padding: 0 !important;
+}

@@ -1,4 +1,23 @@
 /*
  * Instagram baseline styles — Distraction Blocker
- * TODO: Add baseline hide rules for Instagram UI elements.
+ *
+ * No sections are hidden by default.
+ * All hiding is controlled dynamically via the popup toggles
+ * and applied by the content script through JS.
  */
+
+/* Prevent gap above feed when stories tray is hidden */
+div[role="listbox"][style*="none"] {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Expand main content area when aside (suggestions sidebar) is hidden */
+main[role="main"] {
+    max-width: 100%;
+}
+
+aside[style*="none"] + main,
+main:not(:has(~ aside)) {
+    margin-right: 0 !important;
+}

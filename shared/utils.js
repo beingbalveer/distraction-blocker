@@ -55,12 +55,16 @@ function loadPreferences(siteName, callback) {
   const defaults = getDefaults(siteName);
   const storageKey = `prefs_${siteName}`;
 
-  chrome.storage.sync.get(storageKey, (result) => {
-    const saved = result[storageKey] || {};
-    // Merge: saved values override defaults
-    const merged = { ...defaults, ...saved };
-    callback(merged);
-  });
+  try {
+    chrome.storage.sync.get(storageKey, (result) => {
+      if (chrome.runtime.lastError) return; // context invalidated mid-call
+      const saved = result[storageKey] || {};
+      const merged = { ...defaults, ...saved };
+      callback(merged);
+    });
+  } catch {
+    // Extension was reloaded while the tab was open — context is gone, do nothing
+  }
 }
 
 /**
@@ -112,8 +116,19 @@ function initSiteBlocker(siteName, selectorMap) {
   // Initial application
   apply();
 
-  // Re-apply on DOM mutations (for dynamically loaded content)
-  const observer = new MutationObserver(apply);
+  // Re-apply on DOM mutations (debounced — dynamic sites like Instagram fire
+  // hundreds of mutations/sec; without debounce, storage reads hit Chrome's
+  // rate limit and cause errors)
+  let mutationTimer;
+  const observer = new MutationObserver(() => {
+    // Stop if extension was reloaded while the tab stayed open
+    if (!chrome.runtime?.id) {
+      observer.disconnect();
+      return;
+    }
+    clearTimeout(mutationTimer);
+    mutationTimer = setTimeout(apply, 300);
+  });
   observer.observe(document.body, { childList: true, subtree: true });
 
   // Re-apply when preferences change from the popup

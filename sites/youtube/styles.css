@@ -1,4 +1,32 @@
 /*
  * YouTube baseline styles — Distraction Blocker
- * TODO: Add baseline hide rules for YouTube UI elements.
+ *
+ * No sections are hidden by default.
+ * All hiding is controlled dynamically via the popup toggles
+ * and applied by the content script through JS.
  */
+
+/* Remove top-padding reserved for the masthead when header is hidden */
+ytd-app[masthead-hidden_] #page-manager.ytd-app {
+    padding-top: 0 !important;
+}
+
+/* Prevent mini-guide from reserving sidebar width when hidden */
+ytd-mini-guide-renderer[hidden] {
+    display: none !important;
+}
+
+/* Collapse the drawer rail when the full sidebar is hidden */
+ytd-guide-renderer[hidden] {
+    display: none !important;
+}
+
+/* Expand primary (video + page content) when secondary column (recommendations) is hidden */
+ytd-watch-flexy #primary.ytd-watch-flexy {
+    max-width: 100%;
+}
+
+/* Prevent blank vertical gap when shorts shelf is hidden in home feed */
+ytd-rich-shelf-renderer[is-shorts][style*="none"] {
+    margin: 0 !important;
+}
