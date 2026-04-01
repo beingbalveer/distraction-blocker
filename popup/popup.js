@@ -44,6 +44,16 @@ const SITE_CONFIG = {
   }
 };
 
+// Schedule defaults
+const SCHEDULE_DEFAULTS = {
+  enabled: false,
+  days: [1, 2, 3, 4, 5], // Mon–Fri (0=Sun … 6=Sat)
+  startHour: 9,
+  startMin: 0,
+  endHour: 17,
+  endMin: 0
+};
+
 // Map hostnames to site keys
 const HOST_TO_SITE = {
   'www.reddit.com': 'reddit',
@@ -68,8 +78,12 @@ const SITE_DEFAULTS = {
 
 let currentSite = null;
 let currentPrefs = {};
+let currentSchedule = { ...SCHEDULE_DEFAULTS };
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Load schedule first (independent of tab detection)
+  initSchedule();
+
   // Detect current tab
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     if (!tabs || !tabs[0] || !tabs[0].url) {
@@ -105,6 +119,31 @@ document.addEventListener('DOMContentLoaded', () => {
   // Footer buttons
   document.getElementById('btn-hide-all').addEventListener('click', () => setAll(true));
   document.getElementById('btn-show-all').addEventListener('click', () => setAll(false));
+
+  // Schedule toggle
+  document.getElementById('schedule-enabled').addEventListener('change', (e) => {
+    currentSchedule.enabled = e.target.checked;
+    document.getElementById('schedule-config').style.display = e.target.checked ? 'flex' : 'none';
+    updateScheduleStatus();
+    saveSchedule();
+  });
+
+  // Time inputs
+  document.getElementById('schedule-start').addEventListener('change', (e) => {
+    const [h, m] = e.target.value.split(':').map(Number);
+    currentSchedule.startHour = h;
+    currentSchedule.startMin = m;
+    saveSchedule();
+    updateScheduleStatus();
+  });
+
+  document.getElementById('schedule-end').addEventListener('change', (e) => {
+    const [h, m] = e.target.value.split(':').map(Number);
+    currentSchedule.endHour = h;
+    currentSchedule.endMin = m;
+    saveSchedule();
+    updateScheduleStatus();
+  });
 });
 
 function showUnsupported() {
@@ -167,4 +206,80 @@ function savePreferences() {
   if (!currentSite) return;
   const storageKey = `prefs_${currentSite}`;
   chrome.storage.sync.set({ [storageKey]: currentPrefs });
+}
+
+// ── Schedule ────────────────────────────────────────────────────────────────
+
+function initSchedule() {
+  chrome.storage.sync.get('schedule', (result) => {
+    currentSchedule = { ...SCHEDULE_DEFAULTS, ...(result.schedule || {}) };
+    renderScheduleUI();
+  });
+}
+
+function renderScheduleUI() {
+  const enabledCheckbox = document.getElementById('schedule-enabled');
+  const config = document.getElementById('schedule-config');
+
+  enabledCheckbox.checked = currentSchedule.enabled;
+  config.style.display = currentSchedule.enabled ? 'flex' : 'none';
+
+  // Day buttons
+  const daysContainer = document.getElementById('schedule-days');
+  daysContainer.innerHTML = '';
+  const DAY_LABELS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+  DAY_LABELS.forEach((label, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'day-btn' + (currentSchedule.days.includes(i) ? ' active' : '');
+    btn.textContent = label;
+    btn.addEventListener('click', () => {
+      const idx = currentSchedule.days.indexOf(i);
+      if (idx >= 0) currentSchedule.days.splice(idx, 1);
+      else currentSchedule.days.push(i);
+      btn.classList.toggle('active', currentSchedule.days.includes(i));
+      saveSchedule();
+      updateScheduleStatus();
+    });
+    daysContainer.appendChild(btn);
+  });
+
+  // Time inputs
+  const pad = (n) => String(n).padStart(2, '0');
+  document.getElementById('schedule-start').value =
+    `${pad(currentSchedule.startHour)}:${pad(currentSchedule.startMin)}`;
+  document.getElementById('schedule-end').value =
+    `${pad(currentSchedule.endHour)}:${pad(currentSchedule.endMin)}`;
+
+  updateScheduleStatus();
+}
+
+function updateScheduleStatus() {
+  const status = document.getElementById('schedule-status');
+  if (!currentSchedule.enabled) {
+    status.textContent = '';
+    status.className = 'schedule-status';
+    return;
+  }
+  if (isScheduleActiveLocal(currentSchedule)) {
+    status.textContent = '⚡ Blocking active now';
+    status.className = 'schedule-status active';
+  } else {
+    status.textContent = 'Outside scheduled hours';
+    status.className = 'schedule-status inactive';
+  }
+}
+
+function isScheduleActiveLocal(schedule) {
+  if (!schedule.enabled) return false;
+  const now = new Date();
+  const day = now.getDay();
+  if (!schedule.days.includes(day)) return false;
+  const currentMins = now.getHours() * 60 + now.getMinutes();
+  const startMins = schedule.startHour * 60 + schedule.startMin;
+  const endMins = schedule.endHour * 60 + schedule.endMin;
+  return currentMins >= startMins && currentMins < endMins;
+}
+
+function saveSchedule() {
+  chrome.storage.sync.set({ schedule: currentSchedule });
 }

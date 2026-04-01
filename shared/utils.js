@@ -101,16 +101,52 @@ function applyVisibility(selectorMap, preferences) {
 }
 
 /**
+ * Returns true if the given schedule is currently active.
+ * @param {Object} schedule
+ * @returns {boolean}
+ */
+function isScheduleActive(schedule) {
+  if (!schedule || !schedule.enabled) return false;
+  const now = new Date();
+  const day = now.getDay(); // 0=Sun … 6=Sat
+  if (!schedule.days || !schedule.days.includes(day)) return false;
+  const currentMins = now.getHours() * 60 + now.getMinutes();
+  const startMins = (schedule.startHour ?? 9) * 60 + (schedule.startMin ?? 0);
+  const endMins   = (schedule.endHour   ?? 17) * 60 + (schedule.endMin   ?? 0);
+  return currentMins >= startMins && currentMins < endMins;
+}
+
+/**
  * Sets up a content script for a given site.
  * Handles initial load, MutationObserver for dynamic content, and live storage changes.
  * @param {string} siteName
  * @param {Object} selectorMap - { sectionKey: cssSelector | [cssSelector, ...] }
  */
 function initSiteBlocker(siteName, selectorMap) {
+  const storageKey = `prefs_${siteName}`;
+
   function apply() {
-    loadPreferences(siteName, (prefs) => {
-      applyVisibility(selectorMap, prefs);
-    });
+    try {
+      // Fetch prefs and schedule in a single storage read
+      chrome.storage.sync.get([storageKey, 'schedule'], (result) => {
+        if (chrome.runtime.lastError) return;
+        const defaults = getDefaults(siteName);
+        const saved = result[storageKey] || {};
+        const prefs = { ...defaults, ...saved };
+        const schedule = result['schedule'] || null;
+
+        if (isScheduleActive(schedule)) {
+          // Schedule is active — force-hide every section
+          const forced = {};
+          for (const key of Object.keys(prefs)) forced[key] = true;
+          applyVisibility(selectorMap, forced);
+        } else {
+          applyVisibility(selectorMap, prefs);
+        }
+      });
+    } catch {
+      // Extension context invalidated after reload
+    }
   }
 
   // Initial application
@@ -131,9 +167,9 @@ function initSiteBlocker(siteName, selectorMap) {
   });
   observer.observe(document.body, { childList: true, subtree: true });
 
-  // Re-apply when preferences change from the popup
+  // Re-apply when preferences or schedule change from the popup
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'sync' && changes[`prefs_${siteName}`]) {
+    if (area === 'sync' && (changes[storageKey] || changes['schedule'])) {
       apply();
     }
   });

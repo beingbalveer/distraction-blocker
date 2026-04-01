@@ -37,6 +37,34 @@
       <button class="btn btn-hide-all" id="btn-hide-all">Hide All</button>
       <button class="btn btn-show-all" id="btn-show-all">Show All</button>
     </div>
+
+    <!-- Schedule Section (always visible) -->
+    <div class="schedule-section">
+      <div class="schedule-header">
+        <div class="schedule-title">
+          <span>⏰</span>
+          <span>Auto-Block Schedule</span>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="schedule-enabled">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="schedule-config" id="schedule-config">
+        <div class="schedule-days" id="schedule-days"></div>
+        <div class="schedule-times">
+          <div class="time-group">
+            <span>From</span>
+            <input type="time" id="schedule-start" value="09:00">
+          </div>
+          <div class="time-group">
+            <span>To</span>
+            <input type="time" id="schedule-end" value="17:00">
+          </div>
+        </div>
+        <div class="schedule-status" id="schedule-status"></div>
+      </div>
+    </div>
   </div>
 
   <script src="popup.js"></script>

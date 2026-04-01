@@ -219,6 +219,117 @@ body {
     transform: translateY(-1px);
 }
 
+/* --- Schedule Section --- */
+.schedule-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 12px 18px 16px;
+}
+
+.schedule-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.schedule-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #d0d0e0;
+}
+
+.schedule-config {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.schedule-days {
+    display: flex;
+    gap: 4px;
+}
+
+.day-btn {
+    flex: 1;
+    padding: 5px 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    color: #6a6a80;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.day-btn.active {
+    background: rgba(233, 69, 96, 0.2);
+    border-color: #e94560;
+    color: #e94560;
+}
+
+.day-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.day-btn.active:hover {
+    background: rgba(233, 69, 96, 0.3);
+}
+
+.schedule-times {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.time-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+}
+
+.time-group span {
+    font-size: 11px;
+    color: #6a6a80;
+    white-space: nowrap;
+}
+
+.time-group input[type="time"] {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #d0d0e0;
+    font-size: 12px;
+    padding: 5px 8px;
+    outline: none;
+    width: 100%;
+    color-scheme: dark;
+}
+
+.time-group input[type="time"]:focus {
+    border-color: rgba(233, 69, 96, 0.5);
+}
+
+.schedule-status {
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+    padding: 2px 0;
+}
+
+.schedule-status.active {
+    color: #53cf7e;
+}
+
+.schedule-status.inactive {
+    color: #6a6a80;
+}
+
 /* --- Scrollbar --- */
 .toggles-container::-webkit-scrollbar {
     width: 4px;
