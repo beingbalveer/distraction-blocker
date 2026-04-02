@@ -109,12 +109,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update site badge
     document.getElementById('site-name').textContent = SITE_CONFIG[currentSite].label;
 
-    // Load preferences and render toggles
-    const storageKey = `prefs_${currentSite}`;
-    chrome.storage.sync.get(storageKey, (result) => {
+    // Show master switch and advanced section
+    document.getElementById('master-toggle-wrap').style.display = '';
+    document.getElementById('advanced-section').style.display = '';
+
+    // Load prefs + master + custom + url patterns all at once
+    const storageKey     = `prefs_${currentSite}`;
+    const masterKey      = `master_${currentSite}`;
+    const customKey      = `custom_selectors_${currentSite}`;
+    const urlPatternsKey = `url_patterns_${currentSite}`;
+
+    chrome.storage.sync.get([storageKey, masterKey, customKey, urlPatternsKey], (result) => {
       const defaults = SITE_DEFAULTS[currentSite] || {};
       const saved = result[storageKey] || {};
       currentPrefs = { ...defaults, ...saved };
+
+      // Master switch
+      const masterEnabled = result[masterKey] !== false;
+      document.getElementById('master-enabled').checked = masterEnabled;
+      updateTogglesDisabledState(!masterEnabled);
+
+      // Advanced fields
+      document.getElementById('custom-selectors').value = result[customKey] || '';
+      document.getElementById('url-patterns').value = result[urlPatternsKey] || '';
+
       renderToggles();
     });
   });
@@ -122,6 +140,41 @@ document.addEventListener('DOMContentLoaded', () => {
   // Footer buttons
   document.getElementById('btn-hide-all').addEventListener('click', () => setAll(true));
   document.getElementById('btn-show-all').addEventListener('click', () => setAll(false));
+
+  // Master switch
+  document.getElementById('master-enabled').addEventListener('change', (e) => {
+    if (!currentSite) return;
+    updateTogglesDisabledState(!e.target.checked);
+    chrome.storage.sync.set({ [`master_${currentSite}`]: e.target.checked });
+  });
+
+  // Advanced section toggle
+  document.getElementById('advanced-toggle-btn').addEventListener('click', () => {
+    const content = document.getElementById('advanced-content');
+    const btn = document.getElementById('advanced-toggle-btn');
+    const open = content.style.display === 'none';
+    content.style.display = open ? 'flex' : 'none';
+    btn.textContent = open ? '⚙ Advanced ▴' : '⚙ Advanced';
+  });
+
+  // Custom selectors
+  document.getElementById('custom-selectors').addEventListener('change', (e) => {
+    if (!currentSite) return;
+    chrome.storage.sync.set({ [`custom_selectors_${currentSite}`]: e.target.value });
+  });
+
+  // URL patterns
+  document.getElementById('url-patterns').addEventListener('change', (e) => {
+    if (!currentSite) return;
+    chrome.storage.sync.set({ [`url_patterns_${currentSite}`]: e.target.value });
+  });
+
+  // Import / Export
+  document.getElementById('btn-export').addEventListener('click', exportSettings);
+  document.getElementById('btn-import').addEventListener('click', () => {
+    document.getElementById('import-file').click();
+  });
+  document.getElementById('import-file').addEventListener('change', importSettings);
 
   // Schedule toggle
   document.getElementById('schedule-enabled').addEventListener('change', (e) => {
@@ -152,9 +205,19 @@ document.addEventListener('DOMContentLoaded', () => {
 function showUnsupported() {
   document.getElementById('toggles-container').style.display = 'none';
   document.getElementById('popup-footer').style.display = 'none';
+  document.getElementById('advanced-section').style.display = 'none';
   document.getElementById('unsupported-message').style.display = 'flex';
   document.getElementById('site-name').textContent = 'Not supported';
   document.querySelector('.site-dot').style.background = '#e94560';
+}
+
+function updateTogglesDisabledState(disabled) {
+  const container = document.getElementById('toggles-container');
+  container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.disabled = disabled;
+  });
+  container.style.opacity = disabled ? '0.4' : '';
+  container.style.pointerEvents = disabled ? 'none' : '';
 }
 
 function renderToggles() {
@@ -197,7 +260,7 @@ function renderToggles() {
 }
 
 function setAll(hidden) {
-  const checkboxes = document.querySelectorAll('.toggle-switch input');
+  const checkboxes = document.querySelectorAll('#toggles-container input[type="checkbox"]');
   checkboxes.forEach((cb) => {
     cb.checked = hidden;
     currentPrefs[cb.dataset.key] = hidden;
@@ -368,6 +431,47 @@ function loadProfile() {
       }
     });
   });
+}
+
+// ── Import / Export ──────────────────────────────────────────────────────────
+
+const EXPORT_KEYS = [
+  ...ALL_SITES.flatMap(s => [
+    `prefs_${s}`, `master_${s}`, `custom_selectors_${s}`, `url_patterns_${s}`
+  ]),
+  'schedule', 'profiles'
+];
+
+function exportSettings() {
+  chrome.storage.sync.get(EXPORT_KEYS, (result) => {
+    const json = JSON.stringify(result, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'distraction-blocker-settings.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+}
+
+function importSettings(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      const toWrite = {};
+      EXPORT_KEYS.forEach(k => { if (k in data) toWrite[k] = data[k]; });
+      if (Object.keys(toWrite).length === 0) return;
+      chrome.storage.sync.set(toWrite, () => { location.reload(); });
+    } catch {
+      // Invalid JSON — silently ignore
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = ''; // reset so same file can be re-imported
 }
 
 function deleteProfile() {

@@ -122,27 +122,72 @@ function isScheduleActive(schedule) {
  * @param {string} siteName
  * @param {Object} selectorMap - { sectionKey: cssSelector | [cssSelector, ...] }
  */
+/**
+ * Injects (or removes) a <style> tag that hides custom user-defined selectors.
+ * @param {string} customStr - newline-separated CSS selectors
+ */
+function applyCustomSelectors(customStr) {
+  const STYLE_ID = 'db-custom-selectors';
+  let style = document.getElementById(STYLE_ID);
+  const selectors = (customStr || '').split('\n').map(s => s.trim()).filter(Boolean);
+  if (selectors.length === 0) {
+    if (style) style.remove();
+    return;
+  }
+  if (!style) {
+    style = document.createElement('style');
+    style.id = STYLE_ID;
+    document.head.appendChild(style);
+  }
+  style.textContent = selectors.map(s => `${s}{display:none!important}`).join('\n');
+}
+
 function initSiteBlocker(siteName, selectorMap) {
-  const storageKey = `prefs_${siteName}`;
+  const storageKey     = `prefs_${siteName}`;
+  const masterKey      = `master_${siteName}`;
+  const customKey      = `custom_selectors_${siteName}`;
+  const urlPatternsKey = `url_patterns_${siteName}`;
+
+  function showAll() {
+    // Remove all blocking for this site
+    const allShown = {};
+    for (const key of Object.keys(getDefaults(siteName))) allShown[key] = false;
+    applyVisibility(selectorMap, allShown);
+    applyCustomSelectors('');
+  }
 
   function apply() {
     try {
-      // Fetch prefs and schedule in a single storage read
-      chrome.storage.sync.get([storageKey, 'schedule'], (result) => {
+      chrome.storage.sync.get([storageKey, 'schedule', masterKey, customKey, urlPatternsKey], (result) => {
         if (chrome.runtime.lastError) return;
+
+        // 1. Master switch — default true; show everything when off
+        const masterEnabled = result[masterKey] !== false;
+        if (!masterEnabled) { showAll(); return; }
+
+        // 2. URL patterns — if set, only block on matching pages
+        const urlPatternsStr = result[urlPatternsKey] || '';
+        const patterns = urlPatternsStr.split('\n').map(s => s.trim()).filter(Boolean);
+        if (patterns.length > 0 && !patterns.some(p => window.location.href.includes(p))) {
+          showAll(); return;
+        }
+
+        // 3. Schedule — force-hide all sections when active
         const defaults = getDefaults(siteName);
         const saved = result[storageKey] || {};
         const prefs = { ...defaults, ...saved };
         const schedule = result['schedule'] || null;
 
         if (isScheduleActive(schedule)) {
-          // Schedule is active — force-hide every section
           const forced = {};
           for (const key of Object.keys(prefs)) forced[key] = true;
           applyVisibility(selectorMap, forced);
         } else {
           applyVisibility(selectorMap, prefs);
         }
+
+        // 4. Custom selectors (always applied when master is on)
+        applyCustomSelectors(result[customKey] || '');
       });
     } catch {
       // Extension context invalidated after reload
@@ -167,9 +212,12 @@ function initSiteBlocker(siteName, selectorMap) {
   });
   observer.observe(document.body, { childList: true, subtree: true });
 
-  // Re-apply when preferences or schedule change from the popup
+  // Re-apply when any relevant storage key changes from the popup
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'sync' && (changes[storageKey] || changes['schedule'])) {
+    if (area === 'sync' && (
+      changes[storageKey] || changes['schedule'] ||
+      changes[masterKey]  || changes[customKey]  || changes[urlPatternsKey]
+    )) {
       apply();
     }
   });
