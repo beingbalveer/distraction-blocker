@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Distraction Blocker — Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="layout">
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-logo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#e94560;flex-shrink:0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <h2>Distraction Blocker</h2>
+      </div>
+      <div class="nav-section-label">Settings</div>
+      <div class="nav-item active" data-tab="sites">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        Sites
+      </div>
+      <div class="nav-item" data-tab="schedule">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Schedule
+      </div>
+      <div class="nav-item" data-tab="stats">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Statistics
+      </div>
+      <div class="nav-section-label">Manage</div>
+      <div class="nav-item" data-tab="profiles">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        Profiles
+      </div>
+      <div class="nav-item" data-tab="importexport">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Import / Export
+      </div>
+      <div class="nav-section-label">Other</div>
+      <div class="nav-item" data-tab="about">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        About
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="main-content">
+
+      <!-- Sites tab -->
+      <div class="tab-panel active" id="tab-sites">
+        <div class="page-title">Site Settings</div>
+
+        <!-- Reddit -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Reddit</span>
+          </div>
+          <div class="card-body" id="toggles-reddit"></div>
+        </div>
+
+        <!-- YouTube -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">YouTube</span>
+          </div>
+          <div class="card-body" id="toggles-youtube"></div>
+        </div>
+
+        <!-- Instagram -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Instagram</span>
+          </div>
+          <div class="card-body" id="toggles-instagram"></div>
+        </div>
+
+        <!-- Facebook -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Facebook</span>
+          </div>
+          <div class="card-body" id="toggles-facebook"></div>
+        </div>
+      </div>
+
+      <!-- Schedule tab -->
+      <div class="tab-panel" id="tab-schedule">
+        <div class="page-title">Auto-Block Schedule</div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Schedule
+            </span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="schedule-enabled">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div id="schedule-config">
+            <div class="days-row" id="schedule-days"></div>
+            <div class="schedule-grid">
+              <div class="form-group">
+                <label>From</label>
+                <input type="time" id="schedule-start" value="09:00">
+              </div>
+              <div class="form-group">
+                <label>To</label>
+                <input type="time" id="schedule-end" value="17:00">
+              </div>
+            </div>
+            <div class="schedule-status" id="schedule-status"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistics tab -->
+      <div class="tab-panel" id="tab-stats">
+        <div class="page-title">Usage Statistics</div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number" id="stat-total">—</div>
+            <div class="stat-label">Elements Hidden (session)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="stat-alltime">—</div>
+            <div class="stat-label">Elements Hidden (all time)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="stat-sites">—</div>
+            <div class="stat-label">Sites Configured</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              Per-site counts (this session)
+            </span>
+          </div>
+          <div class="card-body" id="stats-breakdown"></div>
+        </div>
+        <div class="card" style="margin-top:8px">
+          <div class="card-header">
+            <span class="card-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+              Keyboard Shortcut
+            </span>
+          </div>
+          <div class="card-body">
+            <div class="toggle-row" style="cursor:default">
+              <span class="toggle-label" style="color:var(--text-sec)">
+                Toggle blocking: <kbd style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:4px;padding:2px 7px;font-family:ui-monospace,monospace;font-size:11px">Alt+Shift+D</kbd>
+              </span>
+              <a class="btn" href="chrome://extensions/shortcuts" target="_blank" style="text-decoration:none;font-size:11px;padding:5px 10px">Change</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profiles tab -->
+      <div class="tab-panel" id="tab-profiles">
+        <div class="page-title">Profiles</div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+              Saved Profiles
+            </span>
+          </div>
+          <div class="card-body" id="profiles-list"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Save Current Settings as Profile
+            </span>
+          </div>
+          <div class="card-body">
+            <div class="importexport-row">
+              <input type="text" id="profile-name" placeholder="Profile name…"
+                style="flex:1;background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-pri);font-size:13px;padding:7px 10px;outline:none;color-scheme:dark">
+              <button class="btn btn-accent" id="btn-save-profile">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Import/Export tab -->
+      <div class="tab-panel" id="tab-importexport">
+        <div class="page-title">Import / Export</div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Backup &amp; Restore
+            </span>
+          </div>
+          <div class="card-body">
+            <div class="importexport-row">
+              <button class="btn" id="btn-export">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export Settings
+              </button>
+              <button class="btn btn-accent" id="btn-import">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Import Settings
+              </button>
+              <input type="file" id="import-file" accept=".json" style="display:none">
+            </div>
+            <div style="padding:0 16px 14px;color:var(--text-ter);font-size:12px;line-height:1.6">
+              Export saves all your preferences, profiles, and schedule to a JSON file you can back up or share between devices.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- About tab -->
+      <div class="tab-panel" id="tab-about">
+        <div class="page-title">About</div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#e94560"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Distraction Blocker <span class="version-badge" id="version-badge">v2.0</span>
+            </span>
+          </div>
+          <div class="about-block">
+            <p>Hide distracting UI elements on Reddit, YouTube, Instagram, and Facebook.</p>
+            <p style="margin-top:10px">Supports per-section toggles, scheduled blocking, profiles, custom CSS selectors, and element picker.</p>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>
