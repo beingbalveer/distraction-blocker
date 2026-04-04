@@ -80,13 +80,16 @@ function savePreferences(siteName, preferences, callback) {
 
 /**
  * Applies visibility rules based on preferences.
+ * Returns the count of elements currently hidden.
  * @param {Object} selectorMap - { sectionKey: cssSelector | [cssSelector, ...] }
  * @param {Object} preferences - { sectionKey: true/false } (true = hidden)
+ * @returns {number} count of hidden elements
  */
 function applyVisibility(selectorMap, preferences) {
+  let hiddenCount = 0;
   for (const [key, selectors] of Object.entries(selectorMap)) {
     if (!selectors) continue;
-    
+
     const selectorList = Array.isArray(selectors) ? selectors : [selectors];
     const shouldHide = preferences[key] === true; // only hide when explicitly enabled
 
@@ -95,9 +98,11 @@ function applyVisibility(selectorMap, preferences) {
       const elements = document.querySelectorAll(selector);
       elements.forEach((el) => {
         el.style.setProperty('display', shouldHide ? 'none' : '', 'important');
+        if (shouldHide) hiddenCount++;
       });
     });
   }
+  return hiddenCount;
 }
 
 /**
@@ -154,6 +159,7 @@ function initSiteBlocker(siteName, selectorMap) {
     for (const key of Object.keys(getDefaults(siteName))) allShown[key] = false;
     applyVisibility(selectorMap, allShown);
     applyCustomSelectors('');
+    reportBadge(0);
   }
 
   function apply() {
@@ -178,20 +184,38 @@ function initSiteBlocker(siteName, selectorMap) {
         const prefs = { ...defaults, ...saved };
         const schedule = result['schedule'] || null;
 
+        let hiddenCount = 0;
         if (isScheduleActive(schedule)) {
           const forced = {};
           for (const key of Object.keys(prefs)) forced[key] = true;
-          applyVisibility(selectorMap, forced);
+          hiddenCount = applyVisibility(selectorMap, forced);
         } else {
-          applyVisibility(selectorMap, prefs);
+          hiddenCount = applyVisibility(selectorMap, prefs);
         }
 
         // 4. Custom selectors (always applied when master is on)
         applyCustomSelectors(result[customKey] || '');
+
+        // 5. Report count to background for badge + all-time stats
+        reportBadge(hiddenCount);
       });
     } catch {
       // Extension context invalidated after reload
     }
+  }
+
+  function reportBadge(count) {
+    try {
+      if (!chrome.runtime?.id) return;
+      chrome.runtime.sendMessage({ type: 'badge-update', count });
+      // Increment all-time counter in local storage
+      if (count > 0) {
+        chrome.storage.local.get('alltime_hidden', (r) => {
+          if (chrome.runtime.lastError) return;
+          chrome.storage.local.set({ alltime_hidden: (r.alltime_hidden || 0) + count });
+        });
+      }
+    } catch {}
   }
 
   // Initial application
