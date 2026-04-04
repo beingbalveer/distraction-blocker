@@ -3,11 +3,24 @@
   "name": "Distraction Blocker",
   "version": "2.0",
   "description": "Hide distracting UI elements on Reddit, YouTube, Instagram, and Facebook. Control what to show and hide from the popup.",
-  "permissions": ["storage", "activeTab"],
+  "permissions": ["storage", "activeTab", "scripting"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_popup": "popup/popup.html",
     "default_title": "Distraction Blocker",
     "default_icon": "icons/icon-48.png"
+  },
+  "options_page": "options/options.html",
+  "commands": {
+    "toggle-blocking": {
+      "suggested_key": {
+        "default": "Alt+Shift+D",
+        "mac": "Alt+Shift+D"
+      },
+      "description": "Toggle distraction blocking on the current site"
+    }
   },
   "content_scripts": [
     {
@@ -33,6 +46,17 @@
       "js": ["shared/utils.js", "sites/facebook/content.js"],
       "css": ["sites/facebook/styles.css"],
       "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["sites/picker.js"],
+      "matches": [
+        "https://www.reddit.com/*", "https://reddit.com/*",
+        "https://www.youtube.com/*", "https://youtube.com/*", "https://m.youtube.com/*",
+        "https://www.instagram.com/*", "https://instagram.com/*",
+        "https://www.facebook.com/*", "https://facebook.com/*", "https://m.facebook.com/*"
+      ]
     }
   ],
   "icons": {
