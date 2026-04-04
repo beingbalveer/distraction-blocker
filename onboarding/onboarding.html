@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Distraction Blocker</title>
+  <style>
+    :root {
+      --accent: #e94560;
+      --bg: #1c1c1e;
+      --surface: #2c2c2e;
+      --border: rgba(255,255,255,0.08);
+      --text: #f5f5f7;
+      --text-sec: #aeaeb2;
+      --green: #34c759;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 560px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .logo { font-size: 56px; margin-bottom: 20px; }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+
+    .tagline {
+      font-size: 15px;
+      color: var(--text-sec);
+      margin-bottom: 40px;
+      line-height: 1.5;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 36px;
+      text-align: left;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .feature-icon { font-size: 22px; margin-bottom: 8px; }
+
+    .feature-card h3 {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .feature-card p {
+      font-size: 12px;
+      color: var(--text-sec);
+      line-height: 1.45;
+    }
+
+    .sites {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .site-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .shortcut-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 20px;
+      margin-bottom: 28px;
+      font-size: 13px;
+      color: var(--text-sec);
+    }
+
+    .shortcut-box kbd {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 5px;
+      padding: 2px 7px;
+      font-family: ui-monospace, monospace;
+      font-size: 12px;
+      color: var(--text);
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 32px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.15s ease;
+    }
+
+    .btn:hover { opacity: 0.85; }
+
+    .footer-note {
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--text-sec);
+    }
+
+    .dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">🛡️</div>
+    <h1>Welcome to Distraction Blocker</h1>
+    <p class="tagline">
+      Take back your focus. Hide the parts of social media<br>
+      that pull your attention away from what matters.
+    </p>
+
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">🎛️</div>
+        <h3>Per-section control</h3>
+        <p>Toggle headers, sidebars, recommendations, and more individually.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⏰</div>
+        <h3>Auto-block schedule</h3>
+        <p>Automatically block distractions during your work hours.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔖</div>
+        <h3>Profiles</h3>
+        <p>Save presets like "Deep Work" and switch between them instantly.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3>Element picker</h3>
+        <p>Click any element on a page to add it to your block list.</p>
+      </div>
+    </div>
+
+    <div class="sites">
+      <span class="site-pill">Reddit</span>
+      <span class="site-pill">YouTube</span>
+      <span class="site-pill">Instagram</span>
+      <span class="site-pill">Facebook</span>
+    </div>
+
+    <div class="shortcut-box">
+      <span class="dot"></span>
+      Quick toggle with <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> on any supported site
+    </div>
+
+    <a class="btn" href="#" onclick="window.close()">Get Started</a>
+    <p class="footer-note">Click the 🛡️ icon in your toolbar to open the extension</p>
+  </div>
+</body>
+</html>
