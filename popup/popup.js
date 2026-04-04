@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Show master switch and advanced section
     document.getElementById('master-toggle-wrap').style.display = '';
-    document.getElementById('advanced-section').style.display = '';
+    document.getElementById('acc-advanced').style.display = '';
 
     // Load prefs + master + custom + url patterns all at once
     const storageKey     = `prefs_${currentSite}`;
@@ -124,10 +124,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const saved = result[storageKey] || {};
       currentPrefs = { ...defaults, ...saved };
 
-      // Master switch
-      const masterEnabled = result[masterKey] !== false;
-      document.getElementById('master-enabled').checked = masterEnabled;
-      updateTogglesDisabledState(!masterEnabled);
+      // Master switch — restore persisted state (default false)
+      const masterOn = result[masterKey] === true;
+      document.getElementById('master-enabled').checked = masterOn;
 
       // Advanced fields
       document.getElementById('custom-selectors').value = result[customKey] || '';
@@ -137,24 +136,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Footer buttons
-  document.getElementById('btn-hide-all').addEventListener('click', () => setAll(true));
-  document.getElementById('btn-show-all').addEventListener('click', () => setAll(false));
-
-  // Master switch
+  // Master switch — toggles all sections on/off and persists its own state
   document.getElementById('master-enabled').addEventListener('change', (e) => {
     if (!currentSite) return;
-    updateTogglesDisabledState(!e.target.checked);
     chrome.storage.sync.set({ [`master_${currentSite}`]: e.target.checked });
-  });
-
-  // Advanced section toggle
-  document.getElementById('advanced-toggle-btn').addEventListener('click', () => {
-    const content = document.getElementById('advanced-content');
-    const btn = document.getElementById('advanced-toggle-btn');
-    const open = content.style.display === 'none';
-    content.style.display = open ? 'flex' : 'none';
-    btn.textContent = open ? '⚙ Advanced ▴' : '⚙ Advanced';
+    setAll(e.target.checked);
   });
 
   // Custom selectors
@@ -169,17 +155,43 @@ document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.sync.set({ [`url_patterns_${currentSite}`]: e.target.value });
   });
 
-  // Import / Export
-  document.getElementById('btn-export').addEventListener('click', exportSettings);
-  document.getElementById('btn-import').addEventListener('click', () => {
-    document.getElementById('import-file').click();
+  // Element picker
+  document.getElementById('btn-picker').addEventListener('click', () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (!tabs[0]?.id) return;
+      chrome.scripting.executeScript({
+        target: { tabId: tabs[0].id },
+        files: ['sites/picker.js']
+      });
+      window.close(); // close popup so picker is usable
+    });
   });
-  document.getElementById('import-file').addEventListener('change', importSettings);
+
+  // Light/dark theme toggle
+  chrome.storage.local.get('theme', (result) => {
+    if (result.theme === 'light') document.body.classList.add('light');
+    updateThemeBtn();
+  });
+  document.getElementById('btn-theme').addEventListener('click', () => {
+    const isLight = document.body.classList.toggle('light');
+    chrome.storage.local.set({ theme: isLight ? 'light' : 'dark' });
+    updateThemeBtn();
+  });
+
+  // Options page
+  document.getElementById('btn-options').addEventListener('click', () => {
+    chrome.runtime.openOptionsPage();
+  });
+
+  // Check for picker result and pre-fill custom selectors
+  checkPickerResult();
+
+  // Accordions
+  initAccordions();
 
   // Schedule toggle
   document.getElementById('schedule-enabled').addEventListener('change', (e) => {
     currentSchedule.enabled = e.target.checked;
-    document.getElementById('schedule-config').style.display = e.target.checked ? 'flex' : 'none';
     updateScheduleStatus();
     saveSchedule();
   });
@@ -204,20 +216,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function showUnsupported() {
   document.getElementById('toggles-container').style.display = 'none';
-  document.getElementById('popup-footer').style.display = 'none';
-  document.getElementById('advanced-section').style.display = 'none';
+  document.getElementById('acc-advanced').style.display = 'none';
   document.getElementById('unsupported-message').style.display = 'flex';
   document.getElementById('site-name').textContent = 'Not supported';
   document.querySelector('.site-dot').style.background = '#e94560';
 }
 
-function updateTogglesDisabledState(disabled) {
-  const container = document.getElementById('toggles-container');
-  container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-    cb.disabled = disabled;
+// ── Accordions ───────────────────────────────────────────────────────────────
+
+function initAccordions(defaults = {}) {
+  document.querySelectorAll('.accordion-section').forEach((section) => {
+    const key  = section.dataset.accKey;
+    const btn  = section.querySelector('.accordion-header');
+    const body = section.querySelector('.accordion-body');
+    if (!btn || !body) return;
+
+    const stored = localStorage.getItem(key);
+    const isOpen = stored !== null ? stored === 'true' : (defaults[key] === true);
+    setAccordionState(btn, body, isOpen);
+
+    btn.addEventListener('click', (e) => {
+      if (e.target.closest('.accordion-extras')) return;
+      const nowOpen = body.hasAttribute('hidden');
+      setAccordionState(btn, body, nowOpen);
+      localStorage.setItem(key, String(nowOpen));
+    });
   });
-  container.style.opacity = disabled ? '0.4' : '';
-  container.style.pointerEvents = disabled ? 'none' : '';
+}
+
+function setAccordionState(btn, body, open) {
+  const chevron = btn.querySelector('.accordion-chevron');
+  if (open) {
+    body.removeAttribute('hidden');
+    btn.setAttribute('aria-expanded', 'true');
+    if (chevron) chevron.style.transform = 'rotate(180deg)';
+  } else {
+    body.setAttribute('hidden', '');
+    btn.setAttribute('aria-expanded', 'false');
+    if (chevron) chevron.style.transform = 'rotate(0deg)';
+  }
 }
 
 function renderToggles() {
@@ -285,10 +322,8 @@ function initSchedule() {
 
 function renderScheduleUI() {
   const enabledCheckbox = document.getElementById('schedule-enabled');
-  const config = document.getElementById('schedule-config');
 
   enabledCheckbox.checked = currentSchedule.enabled;
-  config.style.display = currentSchedule.enabled ? 'flex' : 'none';
 
   // Day buttons
   const daysContainer = document.getElementById('schedule-days');
@@ -433,47 +468,6 @@ function loadProfile() {
   });
 }
 
-// ── Import / Export ──────────────────────────────────────────────────────────
-
-const EXPORT_KEYS = [
-  ...ALL_SITES.flatMap(s => [
-    `prefs_${s}`, `master_${s}`, `custom_selectors_${s}`, `url_patterns_${s}`
-  ]),
-  'schedule', 'profiles'
-];
-
-function exportSettings() {
-  chrome.storage.sync.get(EXPORT_KEYS, (result) => {
-    const json = JSON.stringify(result, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'distraction-blocker-settings.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  });
-}
-
-function importSettings(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    try {
-      const data = JSON.parse(ev.target.result);
-      const toWrite = {};
-      EXPORT_KEYS.forEach(k => { if (k in data) toWrite[k] = data[k]; });
-      if (Object.keys(toWrite).length === 0) return;
-      chrome.storage.sync.set(toWrite, () => { location.reload(); });
-    } catch {
-      // Invalid JSON — silently ignore
-    }
-  };
-  reader.readAsText(file);
-  e.target.value = ''; // reset so same file can be re-imported
-}
-
 function deleteProfile() {
   const name = document.getElementById('profiles-select').value;
   if (!name) return;
@@ -484,5 +478,56 @@ function deleteProfile() {
     chrome.storage.sync.set({ profiles }, () => {
       renderProfilesUI(profiles);
     });
+  });
+}
+
+// ── Theme ────────────────────────────────────────────────────────────────────
+const SVG_SUN  = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+const SVG_MOON = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+
+function updateThemeBtn() {
+  const btn = document.getElementById('btn-theme');
+  const isLight = document.body.classList.contains('light');
+  btn.innerHTML = isLight ? SVG_MOON : SVG_SUN;
+  btn.title = isLight ? 'Switch to dark theme' : 'Switch to light theme';
+}
+
+// ── Element picker result ─────────────────────────────────────────────────────
+function checkPickerResult() {
+  chrome.storage.local.get('picker_result', (result) => {
+    if (!result.picker_result) return;
+    const { selector, hostname, ts } = result.picker_result;
+    // Only apply if fresh (< 5 min) and on same hostname as current site
+    if (Date.now() - ts > 5 * 60 * 1000) return;
+    if (!currentSite) return;
+
+    // Check if hostname matches current site
+    const siteHosts = Object.entries({
+      'www.reddit.com': 'reddit', 'reddit.com': 'reddit',
+      'www.youtube.com': 'youtube', 'youtube.com': 'youtube', 'm.youtube.com': 'youtube',
+      'www.instagram.com': 'instagram', 'instagram.com': 'instagram',
+      'www.facebook.com': 'facebook', 'facebook.com': 'facebook', 'm.facebook.com': 'facebook'
+    });
+    const matchedSite = siteHosts.find(([h]) => h === hostname)?.[1];
+    if (matchedSite !== currentSite) return;
+
+    // Append selector to custom selectors field
+    const customKey = `custom_selectors_${currentSite}`;
+    chrome.storage.sync.get(customKey, (r) => {
+      const existing = (r[customKey] || '').trim();
+      const newVal = existing ? `${existing}\n${selector}` : selector;
+      document.getElementById('custom-selectors').value = newVal;
+      chrome.storage.sync.set({ [customKey]: newVal });
+      // Open the Advanced accordion so user sees the result
+      const advSection = document.getElementById('acc-advanced');
+      const advBtn  = advSection?.querySelector('.accordion-header');
+      const advBody = advSection?.querySelector('.accordion-body');
+      if (advBtn && advBody) {
+        setAccordionState(advBtn, advBody, true);
+        localStorage.setItem('acc-advanced', 'true');
+      }
+    });
+    // Clear picker result
+    chrome.storage.local.remove('picker_result');
   });
 }

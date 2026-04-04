@@ -12,16 +12,24 @@
     <!-- Header -->
     <div class="popup-header">
       <div class="header-title">
-        <span class="header-icon">🛡️</span>
+        <span class="header-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </span>
         <h1>Distraction Blocker</h1>
       </div>
-      <div class="site-badge" id="site-badge">
-        <span class="site-dot"></span>
-        <span id="site-name">Detecting…</span>
-        <label class="master-switch" id="master-toggle-wrap" title="Toggle all blocking for this site" style="display:none">
-          <input type="checkbox" id="master-enabled" checked>
-          <span class="toggle-slider"></span>
-        </label>
+      <div class="header-right">
+        <div class="site-badge" id="site-badge">
+          <span class="site-dot"></span>
+          <span id="site-name">Detecting…</span>
+          <label class="master-switch" id="master-toggle-wrap" title="Toggle all blocking for this site" style="display:none">
+            <input type="checkbox" id="master-enabled" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <button class="theme-btn" id="btn-theme" title="Toggle light/dark theme">
+          <!-- updated by JS -->
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
       </div>
     </div>
 
@@ -30,21 +38,27 @@
 
     <!-- Unsupported site -->
     <div class="unsupported-message" id="unsupported-message" style="display:none">
-      <span class="unsupported-icon">🚫</span>
+      <span class="unsupported-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+      </span>
       <p>This site isn't supported yet.</p>
       <span class="unsupported-hint">Reddit · YouTube · Instagram · Facebook</span>
     </div>
 
-    <!-- Hide / Show all -->
-    <div class="popup-footer" id="popup-footer">
-      <button class="btn btn-hide-all" id="btn-hide-all">Hide All</button>
-      <button class="btn btn-show-all" id="btn-show-all">Show All</button>
-    </div>
-
     <!-- Advanced (per-site) -->
-    <div class="advanced-section" id="advanced-section" style="display:none">
-      <button class="advanced-toggle-btn" id="advanced-toggle-btn">⚙ Advanced</button>
-      <div class="advanced-content" id="advanced-content" style="display:none">
+    <div class="accordion-section" id="acc-advanced" data-acc-key="acc-advanced" style="display:none">
+      <button class="accordion-header" aria-expanded="false" aria-controls="acc-advanced-body">
+        <span class="accordion-label">
+          <span class="accordion-icon">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </span>
+          <span>Advanced</span>
+        </span>
+        <span class="accordion-chevron" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </button>
+      <div class="accordion-body" id="acc-advanced-body" hidden>
         <div class="advanced-field">
           <label>Custom selectors to hide (one per line)</label>
           <textarea id="custom-selectors" rows="3" placeholder=".ad-banner&#10;#promoted-section"></textarea>
@@ -57,49 +71,82 @@
     </div>
 
     <!-- Profiles -->
-    <div class="profiles-section">
-      <div class="profiles-title"><span>🔖</span><span>Profiles</span></div>
-      <div class="profiles-load-row">
-        <select id="profiles-select"><option value="">— no saved profiles —</option></select>
-        <button class="btn-icon" id="btn-profile-load" title="Load">▶</button>
-        <button class="btn-icon btn-icon-danger" id="btn-profile-delete" title="Delete">✕</button>
-      </div>
-      <div class="profiles-save-row">
-        <input type="text" id="profile-name-input" placeholder="New profile name…" maxlength="40">
-        <button class="btn-icon btn-icon-accent" id="btn-profile-save">Save</button>
+    <div class="accordion-section" id="acc-profiles" data-acc-key="acc-profiles">
+      <button class="accordion-header" aria-expanded="false" aria-controls="acc-profiles-body">
+        <span class="accordion-label">
+          <span class="accordion-icon">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </span>
+          <span>Profiles</span>
+        </span>
+        <span class="accordion-chevron" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </button>
+      <div class="accordion-body" id="acc-profiles-body" hidden>
+        <div class="profiles-load-row">
+          <select id="profiles-select"><option value="">— no saved profiles —</option></select>
+          <button class="btn-icon" id="btn-profile-load" title="Load">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </button>
+          <button class="btn-icon btn-icon-danger" id="btn-profile-delete" title="Delete">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="profiles-save-row">
+          <input type="text" id="profile-name-input" placeholder="New profile name…" maxlength="40">
+          <button class="btn-icon btn-icon-accent" id="btn-profile-save">Save</button>
+        </div>
       </div>
     </div>
 
     <!-- Schedule -->
-    <div class="schedule-section">
-      <div class="schedule-header">
-        <div class="schedule-title"><span>⏰</span><span>Auto-Block Schedule</span></div>
-        <label class="toggle-switch">
-          <input type="checkbox" id="schedule-enabled">
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-      <div class="schedule-config" id="schedule-config" style="display:none">
-        <div class="schedule-days" id="schedule-days"></div>
-        <div class="schedule-times">
-          <div class="time-group">
-            <span>From</span>
-            <input type="time" id="schedule-start" value="09:00">
+    <div class="accordion-section" id="acc-schedule" data-acc-key="acc-schedule">
+      <button class="accordion-header" aria-expanded="false" aria-controls="acc-schedule-body">
+        <span class="accordion-label">
+          <span class="accordion-icon">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </span>
+          <span>Auto-Block Schedule</span>
+        </span>
+        <span class="accordion-extras">
+          <label class="toggle-switch" title="Enable schedule">
+            <input type="checkbox" id="schedule-enabled">
+            <span class="toggle-slider"></span>
+          </label>
+        </span>
+        <span class="accordion-chevron" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </button>
+      <div class="accordion-body" id="acc-schedule-body" hidden>
+        <div class="schedule-config" id="schedule-config">
+          <div class="schedule-days" id="schedule-days"></div>
+          <div class="schedule-times">
+            <div class="time-group">
+              <span>From</span>
+              <input type="time" id="schedule-start" value="09:00">
+            </div>
+            <div class="time-group">
+              <span>To</span>
+              <input type="time" id="schedule-end" value="17:00">
+            </div>
           </div>
-          <div class="time-group">
-            <span>To</span>
-            <input type="time" id="schedule-end" value="17:00">
-          </div>
+          <div class="schedule-status" id="schedule-status"></div>
         </div>
-        <div class="schedule-status" id="schedule-status"></div>
       </div>
     </div>
 
-    <!-- Import / Export -->
-    <div class="importexport-row">
-      <button class="btn-icon" id="btn-export">⬇ Export</button>
-      <button class="btn-icon btn-icon-accent" id="btn-import">⬆ Import</button>
-      <input type="file" id="import-file" accept=".json" style="display:none">
+
+    <!-- Bottom toolbar -->
+    <div class="bottom-toolbar">
+      <button class="toolbar-btn" id="btn-picker" title="Element picker — click any element to hide it">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>
+        Pick
+      </button>
+      <button class="toolbar-btn toolbar-btn--icon" id="btn-options" title="Open full settings">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
     </div>
 
   </div>
