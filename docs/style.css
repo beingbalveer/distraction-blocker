@@ -1,14 +1,14 @@
 :root {
-    --bg:             #06070f;
-    --text:           #e8e8f4;
-    --text-sec:       #8080a8;
-    --accent:         #a78bfa;
-    --accent-2:       #7c5cfc;
-    --accent-dim:     rgba(167, 139, 250, 0.12);
-    --accent-border:  rgba(167, 139, 250, 0.22);
+    --bg:             #08060a;
+    --text:           #f0eef4;
+    --text-sec:       #9090a8;
+    --accent:         #e94560;
+    --accent-2:       #c2304a;
+    --accent-dim:     rgba(233, 69, 96, 0.12);
+    --accent-border:  rgba(233, 69, 96, 0.24);
     --card-bg:        rgba(255, 255, 255, 0.03);
     --card-border:    rgba(255, 255, 255, 0.07);
-    --glass:          rgba(6, 7, 15, 0.78);
+    --glass:          rgba(8, 6, 10, 0.80);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
@@ -54,7 +54,7 @@ body::before {
     height: 700px;
     top: -200px;
     left: -200px;
-    background: radial-gradient(circle, rgba(124, 92, 252, 0.14) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(233, 69, 96, 0.14) 0%, transparent 70%);
 }
 
 body::after {
@@ -62,7 +62,7 @@ body::after {
     height: 600px;
     bottom: 10%;
     right: -150px;
-    background: radial-gradient(circle, rgba(167, 139, 250, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(233, 69, 96, 0.1) 0%, transparent 70%);
 }
 
 /* ── Navigation ────────────────────────────────────── */
@@ -90,10 +90,20 @@ nav {
     font-weight: 800;
     color: #fff;
     letter-spacing: -0.03em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo-img {
+    height: 28px;
+    width: 28px;
+    object-fit: contain;
+    flex-shrink: 0;
 }
 
 .logo span {
-    background: linear-gradient(110deg, var(--accent), #c4b5fd);
+    background: linear-gradient(110deg, var(--accent), #f4a0ae);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -123,7 +133,7 @@ nav {
     font-size: 0.9rem;
     display: inline-block;
     transition: transform 0.25s, box-shadow 0.25s;
-    box-shadow: 0 0 24px rgba(124, 92, 252, 0.35), inset 0 1px 0 rgba(255,255,255,0.15);
+    box-shadow: 0 0 24px rgba(233, 69, 96, 0.35), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
 .btn-primary::after {
@@ -137,7 +147,7 @@ nav {
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 40px rgba(124, 92, 252, 0.55), inset 0 1px 0 rgba(255,255,255,0.15);
+    box-shadow: 0 6px 40px rgba(233, 69, 96, 0.55), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
 .btn-primary.lg { padding: 1rem 2.2rem; font-size: 1rem; border-radius: 12px; }
@@ -186,8 +196,8 @@ nav {
     width: 900px;
     height: 600px;
     background: radial-gradient(ellipse at center,
-        rgba(124, 92, 252, 0.18) 0%,
-        rgba(167, 139, 250, 0.08) 40%,
+        rgba(233, 69, 96, 0.18) 0%,
+        rgba(233, 69, 96, 0.08) 40%,
         transparent 70%);
     filter: blur(60px);
     pointer-events: none;
@@ -250,7 +260,7 @@ nav {
 }
 
 .gradient-text {
-    background: linear-gradient(110deg, #c4b5fd 0%, var(--accent) 45%, var(--accent-2) 100%);
+    background: linear-gradient(110deg, #f4a0ae 0%, var(--accent) 45%, var(--accent-2) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -350,7 +360,7 @@ nav {
 }
 
 .section-title h2 span {
-    background: linear-gradient(110deg, var(--accent), #c4b5fd);
+    background: linear-gradient(110deg, var(--accent), #f4a0ae);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -397,14 +407,14 @@ nav {
     left: 0;
     width: 120px;
     height: 120px;
-    background: radial-gradient(circle at top left, rgba(167,139,250,0.1), transparent 70%);
+    background: radial-gradient(circle at top left, rgba(233,69,96,0.1), transparent 70%);
     pointer-events: none;
 }
 
 .feature-card:hover {
     transform: translateY(-6px);
     border-color: var(--accent-border);
-    box-shadow: 0 16px 48px rgba(124, 92, 252, 0.15), 0 0 0 1px var(--accent-border);
+    box-shadow: 0 16px 48px rgba(233, 69, 96, 0.15), 0 0 0 1px var(--accent-border);
 }
 
 .feature-icon {
@@ -418,7 +428,7 @@ nav {
     justify-content: center;
     color: var(--accent);
     margin-bottom: 1.25rem;
-    box-shadow: 0 0 16px rgba(124, 92, 252, 0.15);
+    box-shadow: 0 0 16px rgba(233, 69, 96, 0.15);
 }
 
 .feature-card h3 {
@@ -460,7 +470,7 @@ nav {
     transform: translate(-50%, -50%);
     width: 800px;
     height: 400px;
-    background: radial-gradient(ellipse, rgba(124, 92, 252, 0.08) 0%, transparent 70%);
+    background: radial-gradient(ellipse, rgba(233, 69, 96, 0.08) 0%, transparent 70%);
     filter: blur(40px);
     pointer-events: none;
     z-index: 0;
@@ -491,7 +501,7 @@ nav {
 .preview-feature:hover {
     border-color: var(--accent-border);
     transform: translateY(-3px);
-    box-shadow: 0 8px 28px rgba(124, 92, 252, 0.1);
+    box-shadow: 0 8px 28px rgba(233, 69, 96, 0.1);
 }
 
 .preview-icon {
@@ -572,14 +582,14 @@ nav {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(167,139,250,0.05) 0%, transparent 50%);
+    background: linear-gradient(135deg, rgba(233,69,96,0.05) 0%, transparent 50%);
     pointer-events: none;
 }
 
 .step-content:hover {
     border-color: var(--accent-border);
     transform: translateY(-5px);
-    box-shadow: 0 12px 40px rgba(124, 92, 252, 0.12);
+    box-shadow: 0 12px 40px rgba(233, 69, 96, 0.12);
 }
 
 .step-icon {
@@ -593,7 +603,7 @@ nav {
     border: 1px solid var(--accent-border);
     color: var(--accent);
     margin: 0 auto 1.25rem;
-    box-shadow: 0 0 20px rgba(124, 92, 252, 0.15);
+    box-shadow: 0 0 20px rgba(233, 69, 96, 0.15);
 }
 
 .step-content h3 {
@@ -613,7 +623,7 @@ nav {
     flex: 0 0 2.5rem;
     margin-top: 3.5rem;
     height: 1px;
-    background: linear-gradient(90deg, rgba(167,139,250,0.35), rgba(124,92,252,0.15));
+    background: linear-gradient(90deg, rgba(233,69,96,0.35), rgba(233,69,96,0.15));
     align-self: flex-start;
     position: relative;
 }
@@ -657,14 +667,14 @@ nav {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(167,139,250,0.08), transparent 70%);
+    background: radial-gradient(circle, rgba(233,69,96,0.08), transparent 70%);
     pointer-events: none;
 }
 
 .platform-card:hover {
     border-color: var(--accent-border);
     transform: translateY(-5px);
-    box-shadow: 0 12px 36px rgba(124, 92, 252, 0.12);
+    box-shadow: 0 12px 36px rgba(233, 69, 96, 0.12);
 }
 
 .platform-header { margin-bottom: 1.25rem; }
