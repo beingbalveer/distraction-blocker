@@ -135,8 +135,33 @@ document.addEventListener('DOMContentLoaded', () => {
             const target = document.querySelector(id);
             if (!target) return;
             e.preventDefault();
+            // Close mobile nav if open
+            navLinks.classList.remove('open');
+            hamburger.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', 'false');
             target.scrollIntoView({ behavior: 'smooth' });
         });
     });
+
+    // ── Mobile hamburger ─────────────────────────────────────────────────────
+    const hamburger = document.getElementById('nav-hamburger');
+    const navLinks  = document.getElementById('nav-links');
+
+    if (hamburger && navLinks) {
+        hamburger.addEventListener('click', () => {
+            const isOpen = navLinks.classList.toggle('open');
+            hamburger.classList.toggle('open', isOpen);
+            hamburger.setAttribute('aria-expanded', String(isOpen));
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('nav')) {
+                navLinks.classList.remove('open');
+                hamburger.classList.remove('open');
+                hamburger.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
 
 });
