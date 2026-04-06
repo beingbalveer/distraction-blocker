@@ -488,7 +488,7 @@ const SVG_MOON = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" st
 function updateThemeBtn() {
   const btn = document.getElementById('btn-theme');
   const isLight = document.body.classList.contains('light');
-  btn.innerHTML = isLight ? SVG_MOON : SVG_SUN;
+  btn.innerHTML = isLight ? SVG_SUN : SVG_MOON;
   btn.title = isLight ? 'Switch to dark theme' : 'Switch to light theme';
 }
 
