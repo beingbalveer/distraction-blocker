@@ -268,7 +268,7 @@ function initImportExport() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'distraction-blocker-settings.json';
+      a.download = 'focusshield-settings.json';
       a.click();
       URL.revokeObjectURL(url);
     });
